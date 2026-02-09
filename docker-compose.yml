@@ -1,8 +1,7 @@
-version: "3.8"
 
 services:
   postgres:
-    image: postgres:13
+    image: postgres:15
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -10,6 +9,7 @@ services:
     volumes:
       - postgres-db:/var/lib/postgresql/data
       - ./data:/home/external-data
+    restart: unless-stopped
 
   airflow-webserver:
     image: apache/airflow:2.8.1
@@ -28,6 +28,7 @@ services:
       - ./src:/opt/airflow/src
       - ./requirements.txt:/requirements.txt
     command: bash -c "pip install --no-cache-dir -r /requirements.txt && airflow webserver"
+    restart: unless-stopped
 
   airflow-scheduler:
     image: apache/airflow:2.8.1
@@ -44,6 +45,7 @@ services:
       - ./src:/opt/airflow/src
 
     command: scheduler
+    restart: unless-stopped
 
 volumes:
   postgres-db:

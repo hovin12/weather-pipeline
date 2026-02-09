@@ -1,10 +1,15 @@
 from sqlalchemy import text
+import logging
 
 
-def iter_cities(engine):
+logger = logging.getLogger(__name__)
+
+
+def iter_table(engine, table):
+    logger.info(f"iterating table {table}")
 
     with engine.connect().execution_options(stream_results=True) as conn:
-        result = conn.execute(text("SELECT * FROM cities"))
+        result = conn.execute(text(f"SELECT * FROM {table}"))
 
         for row in result:
-            yield row.city, row.lat, row.lon
+            yield row
