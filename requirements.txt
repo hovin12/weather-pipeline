@@ -1,0 +1,8 @@
+pandas
+sqlalchemy
+psycopg2-binary
+requests
+jsonschema
+dotenv
+pytest
+pytest-mock
