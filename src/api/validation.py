@@ -5,7 +5,9 @@ import pathlib
 
 class Validator:
 
-    expected_schema_path = pathlib.Path(__file__).resolve().parent / 'expected_schema.json'
+    expected_schema_path = (
+        pathlib.Path(__file__).resolve().parent / "expected_schema.json"
+    )
 
     def __init__(self, record):
         self.record = record

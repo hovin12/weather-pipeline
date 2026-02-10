@@ -1,21 +1,15 @@
 import requests
 import json
 from datetime import datetime
-import logging
 from src.db.connections import postgres_conn, api_credentials
 from src.db.city_params import iter_table
 from src.api.api import get_current_weather
 from src.api.validation import Validator
 
-logger = logging.getLogger(__name__)
-
 
 def create_session():
     session = requests.Session()
-    session.headers.update({
-        "User-Agent": "airflow/1.0",
-        "Accept": "application/json"
-    })
+    session.headers.update({"User-Agent": "airflow/1.0", "Accept": "application/json"})
     return session
 
 
@@ -54,8 +48,6 @@ def ingest_rows(run_ts: datetime, source: str, target: str, columns: dict):
     creds = api_credentials()
     engine = postgres_conn().get_sqlalchemy_engine()
 
-    logger.info('start ingesting rows')
     response_iterable = response_generator(session, engine, creds, source, run_ts)
     for batch in batched(response_iterable, size=100):
-        logger.info(f"batch: {batch}")
         save_result(engine=engine, table=target, columns=columns, values=batch)

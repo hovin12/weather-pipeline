@@ -3,8 +3,7 @@ from src.db.connections import postgres_conn
 
 def unpack_and_transfer(source, target, pk):
     conn = postgres_conn()
-    conn.run(
-        f"""
+    conn.run(f"""
         INSERT INTO {target}
         SELECT
             {', '.join(pk)},
@@ -30,5 +29,4 @@ def unpack_and_transfer(source, target, pk):
         FROM {source};
         
         DELETE FROM {source};
-        """
-    )
+        """)

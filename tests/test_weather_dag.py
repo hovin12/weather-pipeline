@@ -5,17 +5,16 @@ from datetime import datetime
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
+load_dotenv(".env.test")
 
-load_dotenv('.env.test')
 
-
-def wait_for_container(service_name='airflow', timeout=60):
+def wait_for_container(service_name="airflow", timeout=60):
     start = time.time()
     while time.time() - start < timeout:
         result = subprocess.run(
             ["docker", "compose", "ps", "--status", "running", "--services"],
             capture_output=True,
-            text=True
+            text=True,
         )
         running_services = result.stdout.splitlines()
         if service_name in running_services:
@@ -27,11 +26,21 @@ def wait_for_container(service_name='airflow', timeout=60):
 def trigger_task(dag_id, task_id):
     subprocess.run(
         [
-            "docker", "compose", "-f", "docker-compose.test.yml",
-            "exec", "-T", "airflow", "airflow", "tasks", "test",
-            dag_id, task_id, datetime.now().strftime('%Y-%m-%d')
+            "docker",
+            "compose",
+            "-f",
+            "docker-compose.test.yml",
+            "exec",
+            "-T",
+            "airflow",
+            "airflow",
+            "tasks",
+            "test",
+            dag_id,
+            task_id,
+            datetime.now().strftime("%Y-%m-%d"),
         ],
-        check=True
+        check=True,
     )
 
 
@@ -43,9 +52,7 @@ def test_weather_pipeline(airflow_env):
     time.sleep(5)
     trigger_task("weather_pipeline", "transfer_cities_task")
 
-    engine = create_engine(
-        os.getenv('PYTEST_SQL_CONN')
-    )
+    engine = create_engine(os.getenv("PYTEST_SQL_CONN"))
 
     with engine.begin() as conn:
         cur = conn.execute(text("SELECT temp FROM weather"))
