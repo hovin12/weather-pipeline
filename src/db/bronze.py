@@ -52,7 +52,7 @@ def response_generator(session, engine, creds, table, run_ts):
 def ingest_rows(run_ts: datetime, source: str, target: str, columns: dict):
     session = create_session()
     creds = api_credentials()
-    engine = postgres_conn()
+    engine = postgres_conn().get_sqlalchemy_engine()
 
     logger.info('start ingesting rows')
     response_iterable = response_generator(session, engine, creds, source, run_ts)

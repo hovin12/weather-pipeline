@@ -1,8 +1,8 @@
-from airflow.providers.postgres.hooks.postgres import PostgresHook
+from src.db.connections import postgres_conn
 
 
 def unpack_and_transfer(source, target, pk):
-    conn = PostgresHook(postgres_conn_id="POSTGRES_CONN")
+    conn = postgres_conn()
     conn.run(
         f"""
         INSERT INTO {target}
