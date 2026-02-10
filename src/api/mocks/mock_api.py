@@ -5,7 +5,7 @@ from pathlib import Path
 from functools import wraps
 
 
-BASE_DIR = Path(__file__).resolve()
+BASE_DIR = Path(__file__).resolve().parent
 
 with open(BASE_DIR / 'responses.json', 'r', encoding='utf-8') as f:
     mocked_responses = json.load(f)
