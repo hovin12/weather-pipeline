@@ -36,5 +36,4 @@ def get_current_weather(session: requests.Session, conn, lat, lon, retries=3):
     api_token = conn.password
     url = f"{conn.conn_type}://{conn.host}/weather"
     params = {"lat": lat, "lon": lon, "units": "metric", "appid": api_token}
-    logger.info("Calling %s with %s", url, params)
     return api_call(session, url, params, retries=retries)
