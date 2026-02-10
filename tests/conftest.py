@@ -12,6 +12,5 @@ def airflow_env():
     yield
 
     subprocess.run(
-        ["docker", "compose", "-f", "docker-compose.test.yml", "down", "-v"],
-        check=True
+        ["docker", "compose", "-f", "docker-compose.test.yml", "down", "-v"], check=True
     )
