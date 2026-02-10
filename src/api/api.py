@@ -1,6 +1,6 @@
+import time
 import logging
 import requests
-import time
 from src.api.mocks.mock_api import mock_weather_if_enabled
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ def api_call(session, url, params, retries=3):
             time.sleep(1)
             continue
         except requests.exceptions.RequestException as e:
-            logger.warning(f"Request error {e}, retrying")
+            logger.warning("Request error %s, retrying", e)
             time.sleep(5)
             continue
 
@@ -25,7 +25,7 @@ def api_call(session, url, params, retries=3):
             logger.warning("Too many requests, retrying")
             time.sleep(60)
         else:
-            logger.warning(f"{response.status_code}, retrying")
+            logger.warning("%s, retrying", response.status_code)
             time.sleep(2**attempt)
     raise RuntimeError
 
@@ -36,5 +36,4 @@ def get_current_weather(session: requests.Session, conn, lat, lon, retries=3):
     api_token = conn.password
     url = f"{conn.conn_type}://{conn.host}/weather"
     params = {"lat": lat, "lon": lon, "units": "metric", "appid": api_token}
-    logger.info(f"Calling {url} with {params}")
     return api_call(session, url, params, retries=retries)

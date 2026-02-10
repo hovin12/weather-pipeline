@@ -1,8 +1,8 @@
-import requests
-import json
 from datetime import datetime
+import json
+import requests
+from sqlalchemy import text
 from src.db.connections import postgres_conn, api_credentials
-from src.db.city_params import iter_table
 from src.api.api import get_current_weather
 from src.api.validation import Validator
 
@@ -24,6 +24,20 @@ def save_result(engine, table: str, columns: dict, values: list):
         conn.execute(sql, values)
 
 
+def iter_table(engine, table):
+    with engine.connect().execution_options(stream_results=True) as conn:
+        result = conn.execute(text(f"SELECT * FROM {table}"))
+        yield from result
+
+
+def response_generator(session, engine, creds, table, run_ts):
+    for *pk, lat, lon in iter_table(engine, table):
+        record = get_current_weather(session, creds, lat, lon)
+        Validator(record).validate()
+        json_record = json.dumps(record)
+        yield [run_ts] + pk + [json_record]
+
+
 def batched(iterable, size):
     batch = []
     for item in iterable:
@@ -33,14 +47,6 @@ def batched(iterable, size):
             batch = []
     if batch:
         yield batch
-
-
-def response_generator(session, engine, creds, table, run_ts):
-    for *pk, lat, lon in iter_table(engine, table):
-        record = get_current_weather(session, creds, lat, lon)
-        Validator(record).validate()
-        json_record = json.dumps(record)
-        yield [run_ts] + pk + [json_record]
 
 
 def ingest_rows(run_ts: datetime, source: str, target: str, columns: dict):

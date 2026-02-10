@@ -23,7 +23,7 @@ def find_response(lat, lon):
         return None, {}
 
 
-def mocked_weather(session, creds, lat, lon):
+def mocked_weather(lat, lon):
     _, response = find_response(lat, lon)
     return response
 
@@ -31,10 +31,10 @@ def mocked_weather(session, creds, lat, lon):
 def mock_weather_if_enabled(func):
 
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(session, creds, lat, lon):
         if os.getenv("MOCK_EXTERNAL_APIS", "").lower() in {"true", "yes", "1"}:
-            return mocked_weather(*args, **kwargs)
-        return func(*args, **kwargs)
+            return mocked_weather(lat, lon)
+        return func(session, creds, lat, lon)
 
     return wrapper
 

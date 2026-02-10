@@ -1,0 +1,21 @@
+[tool.pylint.main]
+py-version = "3.12"
+fail-under = 8.5
+
+[tool.pylint.messages_control]
+disable = [
+  "missing-module-docstring",
+  "missing-class-docstring",
+  "missing-function-docstring",
+  "too-few-public-methods",
+  "too-many-arguments",
+  "too-many-locals",
+  "duplicate-code",
+]
+
+[tool.pylint.format]
+max-line-length = 88
+
+[tool.pylint.design]
+max-args = 6
+max-locals = 20
