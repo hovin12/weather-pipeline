@@ -6,7 +6,7 @@ from src.db.connections import postgres_hook
 # ──────────────────────────────────────────────
 
 DEFAULT_CITY = "Wrocław"
-PAGE_TITLE   = "Weather Report"  # Shown in browser tab and page header
+PAGE_TITLE = "Weather Report"  # Shown in browser tab and page header
 
 HTML_OUTPUT_PATH = os.environ.get("HTML_OUTPUT_PATH", "/opt/airflow/data/html_output")
 
@@ -53,12 +53,13 @@ CITIES_QUERY = """
 # TASK CALLABLE
 # ──────────────────────────────────────────────
 
+
 def generate_html(**context):
     with postgres_hook().get_conn() as conn:
         cur = conn.cursor()
         cur.execute(MAIN_QUERY)
-        rows    = cur.fetchall()
-        headers = [desc[0] for desc in cur.description]   # column names from query
+        rows = cur.fetchall()
+        headers = [desc[0] for desc in cur.description]  # column names from query
 
         cur.execute(CITIES_QUERY)
         cities = [row[0] for row in cur.fetchall()]
@@ -67,9 +68,7 @@ def generate_html(**context):
     try:
         city_col_index = headers.index("city")
     except ValueError:
-        raise ValueError(
-            "No column named 'city' found in MAIN_QUERY result."
-        )
+        raise ValueError("No column named 'city' found in MAIN_QUERY result.")
 
     os.makedirs(HTML_OUTPUT_PATH, exist_ok=True)
 
@@ -90,6 +89,7 @@ def generate_html(**context):
 # HTML BUILDER
 # ──────────────────────────────────────────────
 
+
 def _build_page(headers, rows, cities, city_col_index):
     generated_at = rows[0][0]  # run_ts
 
@@ -99,10 +99,8 @@ def _build_page(headers, rows, cities, city_col_index):
     # ── Table rows — each <tr> carries data-city for JS filtering ──
     rows_html = ""
     for row in rows:
-        city  = row[city_col_index]
-        cells = "".join(
-            f"<td>{'' if cell is None else cell}</td>" for cell in row
-        )
+        city = row[city_col_index]
+        cells = "".join(f"<td>{'' if cell is None else cell}</td>" for cell in row)
         rows_html += f'<tr data-city="{city}">{cells}</tr>\n'
 
     # ── Dropdown options ──

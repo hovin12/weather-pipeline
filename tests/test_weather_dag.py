@@ -61,4 +61,4 @@ def test_weather_pipeline(airflow_env):
         cur = conn.execute(text("SELECT temp FROM weather"))
 
     assert cur.fetchone()
-    assert requests.get('http://localhost:8080/').text
+    assert requests.get("http://localhost:8080/").text

@@ -56,13 +56,14 @@ def weather_pipeline():
     def generate_html_task():
         generate_html()
 
-    (
-        ingest_cities_task()
-        >> transfer_cities_task()
-        >> generate_html_task()
-        >> ingest_stations_task()
-        >> transfer_stations_task()
-    )
+    ingest_cities = ingest_cities_task()
+    transfer_cities = transfer_cities_task()
+    html = generate_html_task()
+    ingest_stations = ingest_stations_task()
+    transfer_stations = transfer_stations_task()
+
+    ingest_cities >> transfer_cities >> [html, ingest_stations]
+    ingest_stations >> transfer_stations
 
 
 dag = weather_pipeline()

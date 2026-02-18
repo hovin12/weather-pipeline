@@ -14,7 +14,7 @@ class Validator:
         self.expected_schema = self._read_schema()
 
     def _read_schema(self):
-        with open(self.expected_schema_path, encoding='utf-8') as f:
+        with open(self.expected_schema_path, encoding="utf-8") as f:
             return json.load(f)
 
     def validate(self):

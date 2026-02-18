@@ -1,5 +1,13 @@
 
 services:
+
+  init-permissions:
+    image: alpine
+    user: root
+    volumes:
+      - ./data:/opt/airflow/data
+    command: chown -R ${AIRFLOW_UID}:${AIRFLOW_UID} /opt/airflow/data
+
   postgres:
     image: postgres:13
     environment:
