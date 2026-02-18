@@ -16,7 +16,7 @@ HTML_OUTPUT_PATH = os.environ.get("HTML_OUTPUT_PATH", "/opt/airflow/data/html_ou
 
 MAIN_QUERY = """
     SELECT 
-    run_ts AT TIME ZONE 'Europe/Paris',
+    run_ts AT TIME ZONE 'UTC',
     city,
     temp,
     perceived_temp,
