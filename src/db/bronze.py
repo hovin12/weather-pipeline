@@ -2,7 +2,7 @@ from datetime import datetime
 import json
 import requests
 from sqlalchemy import text
-from src.db.connections import postgres_conn, api_credentials
+from src.db.connections import postgres_hook, api_credentials
 from src.api.api import get_current_weather
 from src.api.validation import Validator
 
@@ -52,7 +52,7 @@ def batched(iterable, size):
 def ingest_rows(run_ts: datetime, source: str, target: str, columns: dict):
     session = create_session()
     creds = api_credentials()
-    engine = postgres_conn().get_sqlalchemy_engine()
+    engine = postgres_hook().get_sqlalchemy_engine()
 
     response_iterable = response_generator(session, engine, creds, source, run_ts)
     for batch in batched(response_iterable, size=100):

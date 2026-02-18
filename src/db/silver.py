@@ -1,8 +1,8 @@
-from src.db.connections import postgres_conn
+from src.db.connections import postgres_hook
 
 
 def unpack_and_transfer(source, target, pk):
-    conn = postgres_conn()
+    conn = postgres_hook()
     conn.run(f"""
         INSERT INTO {target}
         SELECT

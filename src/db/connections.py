@@ -2,7 +2,7 @@ from airflow.hooks.base import BaseHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
-def postgres_conn():
+def postgres_hook():
     hook = PostgresHook(postgres_conn_id="POSTGRES_CONN")
     return hook
 
