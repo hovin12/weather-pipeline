@@ -16,7 +16,7 @@ HTML_OUTPUT_PATH = os.environ.get("HTML_OUTPUT_PATH", "/opt/airflow/data/html_ou
 
 MAIN_QUERY = """
     SELECT 
-    run_ts AT TIME ZONE 'UTC',
+    run_ts AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Berlin',
     city,
     temp,
     perceived_temp,
@@ -34,9 +34,9 @@ MAIN_QUERY = """
     label,
     description,
     pressure_ground,
-    timestamp,
-    sunrise,
-    sunset
+    timestamp AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Berlin',
+    sunrise AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Berlin',
+    sunset AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Berlin'
     FROM weather
     WHERE run_ts >= ((SELECT MAX(run_ts) FROM weather) - INTERVAL '24 hours')
     ORDER BY run_ts DESC, city
