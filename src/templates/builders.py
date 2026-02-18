@@ -126,11 +126,11 @@ def _build_page(headers, rows, cities, city_col_index):
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: #f5f7fa;
       color: #333;
-      padding: 40px 24px;
+      padding: 40px 12px;
     }}
 
     .container {{
-      max-width: 1200px;
+      max-width: 98vw;
       margin: 0 auto;
     }}
 
@@ -208,7 +208,7 @@ def _build_page(headers, rows, cities, city_col_index):
 
     thead th {{
       background: #f9fafb;
-      padding: 11px 16px;
+      padding: 11px 10px;
       text-align: left;
       font-size: 0.75rem;
       font-weight: 600;
@@ -233,7 +233,7 @@ def _build_page(headers, rows, cities, city_col_index):
     }}
 
     td {{
-      padding: 10px 16px;
+      padding: 10px 10px;
       white-space: nowrap;
     }}
 
