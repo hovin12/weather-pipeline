@@ -3,6 +3,7 @@ from airflow.decorators import dag, task
 from airflow.operators.python import get_current_context
 from src.db.bronze import ingest_rows
 from src.db.silver import unpack_and_transfer
+from src.templates.builders import generate_html
 
 
 def ingest(*args, **kwargs):
@@ -51,9 +52,14 @@ def weather_pipeline():
             pk=["run_ts", "city", "direction"],
         )
 
+    @task
+    def generate_html_task():
+        generate_html()
+
     (
         ingest_cities_task()
         >> transfer_cities_task()
+        >> generate_html_task()
         >> ingest_stations_task()
         >> transfer_stations_task()
     )

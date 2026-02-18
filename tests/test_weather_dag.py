@@ -2,6 +2,7 @@ import subprocess
 import time
 import os
 from datetime import datetime
+import requests
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 
@@ -51,6 +52,8 @@ def test_weather_pipeline(airflow_env):
     trigger_task("weather_pipeline", "ingest_cities_task")
     time.sleep(5)
     trigger_task("weather_pipeline", "transfer_cities_task")
+    time.sleep(1)
+    trigger_task("weather_pipeline", "generate_html_task")
 
     engine = create_engine(os.getenv("PYTEST_SQL_CONN"))
 
@@ -58,3 +61,4 @@ def test_weather_pipeline(airflow_env):
         cur = conn.execute(text("SELECT temp FROM weather"))
 
     assert cur.fetchone()
+    assert requests.get('http://localhost:8080/').text
