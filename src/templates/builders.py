@@ -79,7 +79,6 @@ def generate_html(**context):
         f.write(html)
 
     # Make readable by nginx
-    os.chmod(output_file, 0o644)  # rw-r--r--
     os.chmod(HTML_OUTPUT_PATH, 0o755)  # rwxr-xr-x
 
     print(f"[generate_html] Wrote {len(rows)} rows → {output_file}")

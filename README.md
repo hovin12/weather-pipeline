@@ -57,12 +57,14 @@ src/
     connections.py      # Creates connections using Airflow Hooks
     bronze.py           # Reads raw data and stores in Postgres DB
     silver.py           # Transforms raw data and stores in Postgres DB
+  templates/
+    builders.py         # Creates html for the webpage
 
 tests/
-  sql/                  # SQL query to create tables in Postgres
   conftest.py           # Sets up docker-compose for tests
   test_weather_dag.py   # Interation test: Airflow + Docker + mocked API
 
+init.sql                # SQL query to create tables in Postgres
 .env.example
 .env.test
 requirements.txt
@@ -90,31 +92,9 @@ cp .env.example .env
 
 ## Running the Project
 
-1. Run docker containers.
-
 ```bash
 docker-compose up -d
 ```
-
-2. Initiate db in airflow webserver container.
-
-```bash
-airflow db migrate
-```
-
-3. Create admin user.
-
-```bash
-airflow users create \
-  --username admin \
-  --firstname Admin \
-  --lastname User \
-  --role Admin \
-  --email admin@example.com \
-  --password admin
-```
-
-4. Create Postgres tables `(tests/sql/init.sql)`.
 
 ---
 

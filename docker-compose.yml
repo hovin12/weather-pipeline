@@ -10,20 +10,25 @@ services:
 
   postgres:
     image: postgres:13
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+    env_file:
+      - .env
     volumes:
       - postgres-db:/var/lib/postgresql/data
       - ./src/api/mocks:/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "airflow" ]
+      interval: 5s
+      retries: 10
     restart: unless-stopped
 
   airflow-webserver:
-    image: apache/airflow:2.8.1
-    user: "${AIRFLOW_UID}:0"
+    build: .
+    image: weather-airflow:2.8.1
+    user: "${UID:-50000}:0"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     env_file:
       - .env
     ports:
@@ -35,14 +40,15 @@ services:
       - ./data:/opt/airflow/data
       - ./src:/opt/airflow/src
       - ./requirements.txt:/requirements.txt
-    command: bash -c "pip install --no-cache-dir -r /requirements.txt && airflow webserver"
+    command: ["webserver"]
     restart: unless-stopped
 
   airflow-scheduler:
-    image: apache/airflow:2.8.1
-    user: "${AIRFLOW_UID}:0"
+    image: weather-airflow:2.8.1
+    user: "${UID:-50000}:0"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     env_file:
       - .env
     volumes:
@@ -52,7 +58,7 @@ services:
       - ./data:/opt/airflow/data
       - ./src:/opt/airflow/src
 
-    command: scheduler
+    command: ["scheduler"]
     restart: unless-stopped
 
   nginx:

@@ -1,14 +1,12 @@
 
 services:
   postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+    image: postgres:13
+    env_file:
+      - .env.test
     volumes:
       - postgres-db:/var/lib/postgresql/data
-      - ./tests/sql:/docker-entrypoint-initdb.d
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - ./src/api/mocks:/data
     ports:
       - "5433:5432"
