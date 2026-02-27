@@ -1,12 +1,15 @@
 
 services:
 
-  init-permissions:
+  init-dirs:
     image: alpine
     user: root
     volumes:
+      - ./logs:/opt/airflow/logs
+      - ./dags:/opt/airflow/dags
+      - ./plugins:/opt/airflow/plugins
       - ./data:/opt/airflow/data
-    command: chown -R ${AIRFLOW_UID}:${AIRFLOW_UID} /opt/airflow/data
+    command: sh -c "chown -R ${UID:-50000}:0 /opt/airflow/logs /opt/airflow/dags /opt/airflow/plugins /opt/airflow/data"
 
   postgres:
     image: postgres:13
@@ -29,6 +32,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      init-dirs:
+        condition: service_completed_successfully
     env_file:
       - .env
     ports:
@@ -49,6 +54,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      init-dirs:
+        condition: service_completed_successfully
     env_file:
       - .env
     volumes:
@@ -57,6 +64,7 @@ services:
       - ./plugins:/opt/airflow/plugins
       - ./data:/opt/airflow/data
       - ./src:/opt/airflow/src
+      - ./requirements.txt:/requirements.txt
 
     command: ["scheduler"]
     restart: unless-stopped

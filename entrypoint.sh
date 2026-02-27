@@ -13,7 +13,7 @@ fi
 # 2. Wait for Postgres to be ready
 # ─────────────────────────────────────────────
 echo ">>> Waiting for Postgres..."
-until airflow db check 2>/dev/null; do
+until pg_isready -h "$POSTGRES_HOST" -U "$POSTGRES_USER" 2>/dev/null; do
   sleep 2
 done
 echo ">>> Postgres is ready."
@@ -59,9 +59,9 @@ airflow connections add 'POSTGRES_CONN' \
   2>&1 | grep -v "already exist" || true
 
 airflow connections add 'CURRENT_WEATHER_API' \
-  --conn-type    HTTP \
+  --conn-type    http \
   --conn-host    "${API_HOST:-api.openweathermap.org/data/2.5}" \
-  --conn-schema  "${POSTGRES_DB:-https}" \
+  --conn-schema  "${API_SCHEMA:-https}" \
   --conn-password "${API_KEY}" \
   2>&1 | grep -v "already exist" || true
 
