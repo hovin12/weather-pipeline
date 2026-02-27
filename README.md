@@ -93,6 +93,7 @@ cp .env.example .env
 ## Running the Project
 
 ```bash
+docker-compose build
 docker-compose up -d
 ```
 
